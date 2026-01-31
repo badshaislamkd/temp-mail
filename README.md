@@ -31,6 +31,12 @@
 
 ### I had 330+ stars and 25.000+ visitors on this project before, but for some reason I had to make the repo private. As of April 23, 2025, I made it public again and all the stars are gone. 
 
+## 🤖 TempMail Telegram Bot (Production)
+
+This repository now includes a production-ready Telegram bot that provides disposable email addresses and inbox access via chat. The bot is fully documented with setup, deployment, and extension guidance in:
+
+- **[TempMail Telegram Bot — Production Guide](docs/telegram-bot.md)**
+
 TempMail V2 is a cutting-edge temporary email solution designed for privacy-conscious users. Generate disposable email addresses instantly to protect your primary inbox from spam, tracking, and unwanted communications. Built with modern web technologies, TempMail V2 offers a sleek, responsive interface with powerful features like real-time inbox updates, dark mode, and seamless email management.
 
 <div align="center">
