@@ -1,0 +1,15 @@
+{
+  "name": "temp-mail-telegram-bot",
+  "version": "1.0.0",
+  "description": "Production-ready Telegram bot for disposable email via Guerrilla Mail.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "lint": "node -c src/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "telegraf": "^4.16.3"
+  }
+}
