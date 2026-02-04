@@ -51,6 +51,10 @@ bot/
    ```
 2. Set `TELEGRAM_BOT_TOKEN` in `bot/.env`.
 3. (Optional) Set `BOT_ALLOWED_USERS` to a comma-separated list of Telegram user IDs for access control.
+4. (Optional) Tune runtime settings:
+   - `REQUEST_TIMEOUT_MS` — API timeout in milliseconds.
+   - `RATE_LIMIT_MS` — Minimum time between requests per user.
+   - `STORAGE_PATH` — Path to the JSON file used for storing user sessions.
 
 ### 3) Install dependencies
 ```bash
@@ -99,6 +103,12 @@ If you prefer Docker, create a container that runs `npm start` in the `bot/` dir
 - Register them in `bot/src/index.js`.
 - Place external integrations in `bot/src/services/`.
 - For new storage needs, extend `bot/src/storage/userStore.js` or replace it with a database-backed implementation.
+- When adding new state, keep writes atomic and avoid breaking the existing JSON schema for `users`.
+
+## Known limitations & assumptions
+- The bot relies on Guerrilla Mail availability and mailbox retention, which can expire quickly.
+- Storage is a single JSON file intended for a single bot process; use a shared database for multi-instance deployments.
+- Access control depends on Telegram user IDs provided in `BOT_ALLOWED_USERS`.
 
 ## Common issues & troubleshooting
 - **Bot replies “Access denied.”**

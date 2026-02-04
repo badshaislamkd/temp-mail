@@ -24,11 +24,22 @@ const parseAllowedUsers = (value) => {
   return new Set(ids);
 };
 
+const parseNumber = (value, fallback, name) => {
+  if (value === undefined || value === null || value === '') {
+    return fallback;
+  }
+  const parsed = Number(value);
+  if (Number.isNaN(parsed)) {
+    throw new Error(`${name} must be a valid number.`);
+  }
+  return parsed;
+};
+
 export const config = {
   botToken: required(process.env.TELEGRAM_BOT_TOKEN, 'TELEGRAM_BOT_TOKEN'),
   allowedUsers: parseAllowedUsers(process.env.BOT_ALLOWED_USERS),
   apiBase: process.env.GUERRILLA_API_BASE ?? 'https://api.guerrillamail.com/ajax.php',
-  requestTimeoutMs: Number(process.env.REQUEST_TIMEOUT_MS ?? 10000),
+  requestTimeoutMs: parseNumber(process.env.REQUEST_TIMEOUT_MS, 10000, 'REQUEST_TIMEOUT_MS'),
   storagePath: process.env.STORAGE_PATH ?? 'data/users.json',
-  rateLimitMs: Number(process.env.RATE_LIMIT_MS ?? 1500)
+  rateLimitMs: parseNumber(process.env.RATE_LIMIT_MS, 1500, 'RATE_LIMIT_MS')
 };

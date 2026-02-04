@@ -18,7 +18,14 @@ const ensureFile = async () => {
 const readData = async () => {
   await ensureFile();
   const raw = await fs.readFile(resolvePath(), 'utf-8');
-  return JSON.parse(raw);
+  try {
+    return JSON.parse(raw);
+  } catch (error) {
+    logger.error('Failed to parse storage file. Resetting to empty store.', { error: error.message });
+    const empty = { users: {} };
+    await writeData(empty);
+    return empty;
+  }
 };
 
 const writeData = async (data) => {
@@ -28,26 +35,37 @@ const writeData = async (data) => {
   await fs.rename(tempPath, filePath);
 };
 
+let writeLock = Promise.resolve();
+const withWriteLock = (operation) => {
+  const next = writeLock.then(operation, operation);
+  writeLock = next.catch(() => {});
+  return next;
+};
+
 export const userStore = {
   async getUser(userId) {
     const data = await readData();
     return data.users[userId] ?? null;
   },
   async setUser(userId, payload) {
-    const data = await readData();
-    data.users[userId] = {
-      ...data.users[userId],
-      ...payload,
-      updatedAt: new Date().toISOString()
-    };
-    await writeData(data);
-    logger.info('User state updated', { userId });
-    return data.users[userId];
+    return withWriteLock(async () => {
+      const data = await readData();
+      data.users[userId] = {
+        ...data.users[userId],
+        ...payload,
+        updatedAt: new Date().toISOString()
+      };
+      await writeData(data);
+      logger.info('User state updated', { userId });
+      return data.users[userId];
+    });
   },
   async clearUser(userId) {
-    const data = await readData();
-    delete data.users[userId];
-    await writeData(data);
-    logger.info('User state cleared', { userId });
+    return withWriteLock(async () => {
+      const data = await readData();
+      delete data.users[userId];
+      await writeData(data);
+      logger.info('User state cleared', { userId });
+    });
   }
 };
